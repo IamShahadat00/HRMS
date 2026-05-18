@@ -1,0 +1,130 @@
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-fade-in">
+  <!-- 1. Header & Search Section -->
+  <div
+    class="p-6 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4 bg-gray-50/30"
+  >
+    <div class="relative w-full md:w-96">
+      <i class="bi bi-search absolute left-3 top-2.5 text-gray-400"></i>
+      <input
+        type="text"
+        (input)="onSearch($event)"
+        placeholder="Search staff by name, email or position..."
+        class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white transition-all shadow-sm"
+      />
+    </div>
+
+    <button
+      routerLink="/dashboard/employees/add"
+      class="btn-primary flex items-center shadow-lg shadow-blue-100"
+    >
+      <i class="bi bi-person-plus-fill mr-2"></i>
+      <span class="font-bold">Add New Employee</span>
+    </button>
+  </div>
+
+  <!-- 2. Loading State Section -->
+  @if (isLoading) {
+    <div class="p-24 text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+      <p class="mt-4 text-gray-500 font-medium italic">Synchronizing database...</p>
+    </div>
+  } @else {
+    <!-- 3. Main Data Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-gray-50/50 text-[11px] uppercase font-bold text-gray-400 tracking-wider">
+          <tr>
+            <th class="px-6 py-4">Employee Details</th>
+            <th class="px-6 py-4">Department</th>
+            <th class="px-6 py-4">Position</th>
+            <th class="px-6 py-4 text-center">Status</th>
+            <th class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-50">
+          @for (emp of employees; track emp.id) {
+            <tr class="hover:bg-blue-50/20 transition-colors border-b border-gray-50">
+              <!-- Name & Contact -->
+              <td class="px-6 py-4">
+                <div class="flex items-center">
+                  <div
+                    class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-3 text-xs shadow-sm"
+                  >
+                    {{ (emp.firstName || 'U').charAt(0) }}{{ (emp.lastName || '').charAt(0) }}
+                  </div>
+                  <div>
+                    <div class="font-bold text-gray-800 leading-none mb-1">
+                      {{ emp.firstName }} {{ emp.lastName }}
+                    </div>
+                    <div class="text-xs text-gray-400 font-medium">{{ emp.email }}</div>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Department Badge -->
+              <td class="px-6 py-4">
+                <div
+                  class="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600 text-[11px] font-bold uppercase tracking-tight"
+                >
+                  <i class="bi bi-building mr-1"></i>
+                  {{ emp.deptName || 'General' }}
+                </div>
+              </td>
+
+              <!-- Position -->
+              <td class="px-6 py-4 text-sm text-gray-600 font-medium">
+                {{ emp.position }}
+              </td>
+
+              <!-- Status Badge -->
+              <td class="px-6 py-4 text-center">
+                <span [ngClass]="emp.isActive ? 'badge-active' : 'badge-inactive'">
+                  {{ emp.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
+                <!-- Salary Config (Green) -->
+                <button
+                  [routerLink]="['/dashboard/salary/setup', emp.id]"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm border border-emerald-100"
+                  title="Configure Salary"
+                >
+                  <i class="bi bi-cash-coin"></i>
+                </button>
+
+                <!-- Edit Profile (Blue) -->
+                <button
+                  [routerLink]="['/dashboard/employees/edit', emp.id]"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100"
+                  title="Edit Profile"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+                <!-- Delete (Red) -->
+                <button
+                  (click)="deleteEmployee(emp.id!)"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all shadow-sm border border-rose-100"
+                  title="Delete"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <!-- Empty State -->
+            <tr>
+              <td colspan="5" class="p-20 text-center text-gray-400 italic">
+                <i class="bi bi-person-x text-5xl block mb-2 opacity-20"></i>
+                No matching employee records found.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

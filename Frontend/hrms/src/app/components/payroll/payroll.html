@@ -1,0 +1,80 @@
+<div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+  <!-- Header & Controls -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-800">Monthly Payroll Engine</h2>
+      <p class="text-sm text-gray-500">Calculate taxes and generate net salary records for all active staff.</p>
+    </div>
+
+    <!-- Filters and Action -->
+    <div class="flex flex-wrap items-end gap-3">
+      <!-- Year Selector -->
+      <div class="flex flex-col">
+        <label class="text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Year</label>
+        <select [(ngModel)]="selectedYear" class="block w-24 p-2.5 border border-gray-300 rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          <option [value]="2025">2025</option>
+          <option [value]="2026">2026</option>
+        </select>
+      </div>
+
+      <!-- Month Selector -->
+      <div class="flex flex-col">
+        <label class="text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Month</label>
+        <select [(ngModel)]="selectedMonth" class="block w-32 p-2.5 border border-gray-300 rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          <option *ngFor="let m of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]" [value]="m">
+            Month {{ m }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Generate Button -->
+      <button
+        (click)="generate()"
+        [disabled]="isLoading"
+        class="bg-blue-600 text-white px-6 py-2.5 rounded-xl hover:bg-blue-700 font-bold shadow-md hover:shadow-lg transition-all flex items-center disabled:bg-blue-300"
+      >
+        <i *ngIf="!isLoading" class="bi bi-gear-fill mr-2"></i>
+        <span *ngIf="isLoading" class="animate-spin mr-2 border-2 border-white border-t-transparent rounded-full h-4 w-4"></span>
+        {{ isLoading ? 'Processing...' : 'Run Payroll' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Payroll Results Table -->
+  <div class="overflow-x-auto rounded-xl border border-gray-100" *ngIf="payrolls.length > 0">
+    <table class="w-full text-left">
+      <thead class="bg-gray-50 text-[11px] uppercase font-bold text-gray-500 tracking-wider">
+        <tr>
+          <th class="p-5">Employee Name</th>
+          <th class="p-5">Gross Earnings</th>
+          <th class="p-5 text-red-600">Tax Deducted</th>
+          <th class="p-5 font-extrabold text-gray-900">Net Pay</th>
+          <th class="p-5 text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <tr *ngFor="let p of payrolls" class="hover:bg-blue-50/30 transition-colors">
+          <td class="p-5 font-semibold text-gray-800">{{ p.employeeName }}</td>
+          <td class="p-5 text-gray-600">{{ p.grossSalary | currency }}</td>
+          <td class="p-5 text-red-500 font-medium">-{{ p.taxDeduction | currency }}</td>
+          <td class="p-5">
+            <span class="text-emerald-600 font-bold text-lg decoration-emerald-200 underline decoration-2">
+              {{ p.netSalary | currency }}
+            </span>
+          </td>
+          <td class="p-5 text-center">
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter">
+              {{ p.status }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="payrolls.length === 0 && !isLoading" class="py-20 text-center border-2 border-dashed border-gray-100 rounded-2xl">
+    <i class="bi bi-calculator text-5xl text-gray-200"></i>
+    <p class="mt-4 text-gray-400 font-medium">Select a month and year to generate or view records.</p>
+  </div>
+</div>

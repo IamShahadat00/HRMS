@@ -1,0 +1,54 @@
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-fade-in">
+  <div class="p-6 border-b border-gray-50 bg-gray-50/30">
+    <h2 class="text-xl font-bold text-gray-800">Salary Configurations</h2>
+    <p class="text-sm text-gray-500">Manage base pay and allowances for staff.</p>
+  </div>
+
+  @if (isLoading) {
+    <div class="p-20 text-center">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
+      <p class="mt-4 text-gray-500">Loading payroll data...</p>
+    </div>
+  } @else {
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-gray-50/50 text-[11px] uppercase font-bold text-gray-400 tracking-wider">
+          <tr>
+            <th class="px-6 py-4">Employee</th>
+            <th class="px-6 py-4">Base Salary</th>
+            <th class="px-6 py-4 text-green-600">Allowances</th>
+            <th class="px-6 py-4 text-red-600">Deductions</th>
+            <th class="px-6 py-4 font-bold text-gray-900">Gross Pay</th>
+            <th class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          @for (s of salaries; track s.id) {
+            <tr class="hover:bg-blue-50/10 transition-colors">
+              <td class="px-6 py-4 font-bold text-gray-800">{{ s.employeeName }}</td>
+              <td class="px-6 py-4 text-sm">{{ s.baseSalary | currency }}</td>
+              <td class="px-6 py-4 text-sm text-green-600 font-medium">
+                +{{
+                  (s.medicalAllowance || 0) + (s.conveyanceAllowance || 0) + (s.otherBonuses || 0)
+                    | currency
+                }}
+              </td>
+              <td class="px-6 py-4 text-sm text-red-500">-{{ s.deductions || 0 | currency }}</td>
+              <td class="px-6 py-4 font-black text-blue-600">
+                {{ s.grossSalary | currency }}
+              </td>
+              <td class="px-6 py-4 text-right">
+                <button
+                  [routerLink]="['/dashboard/salary/setup', s.employeeId]"
+                  class="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-blue-600 hover:text-white transition-all"
+                >
+                  Edit Config
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

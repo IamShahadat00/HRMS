@@ -51,4 +51,4 @@ HRMS Pro is a professional-grade, web-based application designed to automate org
 4. Login with default credentials: `admin` / `Admin@123`.
 
 ---
-*Developed by [Your Name] as a Full-Stack Job Preparation Project.*
+*Developed by Shahadat Hossain Sakib as a Full-Stack Job Preparation Project.*

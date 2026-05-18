@@ -1,4 +1,5 @@
 # HRMS
+
 Project Title: HRMS Pro - Full-Stack Human Resource Management System
 Description:
 A comprehensive web-based HRMS designed to automate organizational staff management, financial structures, and monthly payroll processing. This project follows a decoupled N-Tier architecture to ensure scalability and maintainability.
